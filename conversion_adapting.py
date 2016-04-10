@@ -83,11 +83,11 @@ data['route_coord'] = data['route_cell_id'].apply(get_coords).tolist()
 with open('./data_routes_pickle/routes_user_id', 'wb') as f:
     pickle.dump(list(data[user_id_str]), f)
 
-# with open('./data_routes_pickle/routes_coord', 'wb') as f:
-#     pickle.dump(list(data['route_coord']), f)
-#
-# with open('./data_routes_pickle/routes_cell_id', 'wb') as f:
-#     pickle.dump(list(data['route_cell_id']), f)
-#
-# with open('./data_routes_pickle/cell_id_lac_info', 'wb') as f:
-#     pickle.dump(report_dict, f)
+with open('./data_routes_pickle/routes_coord', 'wb') as f:
+    pickle.dump(list(data['route_coord']), f)
+
+with open('./data_routes_pickle/routes_cell_id', 'wb') as f:
+    pickle.dump(list(data['route_cell_id']), f)
+
+with open('./data_routes_pickle/cell_id_lac_info', 'wb') as f:
+    pickle.dump(report_dict, f)
