@@ -144,3 +144,13 @@ with open('./data_routes_pickle/routes_user_id', 'wb') as f:
 
 with open('./data_routes_pickle/routes_coord', 'wb') as f:
     pickle.dump(list(data['route_coord']), f)
+
+# Creating report_dict
+#
+# report_df = pd.read_csv('./data_routes_csv/report.csv')
+# report_dict = report_df.set_index([cell_id_str_report, lac_str_report]).T.to_dict('list')
+#
+# with open('./data_routes_pickle/cell_id_lac_info', 'wb') as f:
+#     pickle.dump(report_dict, f)
+#
+# [end] Creating report_dict
