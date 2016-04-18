@@ -12,6 +12,8 @@ lac_str = 'lacid'
 
 cell_id_str_report = 'Cell ID'
 lac_str_report = 'LAC'
+lat_str_report = 'LAT'
+lon_str_report = 'LON'
 
 nrows = 10000
 interval_min = 10
@@ -19,7 +21,7 @@ measure_approx_boundary = interval_min  # TODO Seems better to use smth like int
 
 dist_measure = 'standard'
 
-df = pd.read_csv('./data_routes_csv/user_49454_bug.csv')
+df = pd.read_csv('./data_routes_csv/petrovsky_11.csv')
 
 with open('./data_routes_pickle/cell_id_lac_info', 'rb') as f:
     report_dict = pickle.load(f)
@@ -34,7 +36,7 @@ def get_time(time_str):
 
 
 from_time = get_time('24.11.2015 16.00.00')
-to_time = get_time('24.11.2015 23.59.00')
+to_time = get_time('24.11.2015 23.59.59')
 
 
 def create_aligned_path(data_src, start_time, end_time, measure):
@@ -146,11 +148,11 @@ with open('./data_routes_pickle/routes_coord', 'wb') as f:
     pickle.dump(list(data['route_coord']), f)
 
 # Creating report_dict
-#
+
 # report_df = pd.read_csv('./data_routes_csv/report.csv')
 # report_dict = report_df.set_index([cell_id_str_report, lac_str_report]).T.to_dict('list')
 #
 # with open('./data_routes_pickle/cell_id_lac_info', 'wb') as f:
 #     pickle.dump(report_dict, f)
-#
+
 # [end] Creating report_dict
