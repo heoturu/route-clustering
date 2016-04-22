@@ -19,7 +19,6 @@ convertion_results_dir = '../converted/'
 # Route data convertions
 
 report_df = pd.read_csv(route_dir + 'report.csv')
-report_cleared = pd.read_csv(route_dir + 'report_cleared.csv')
 cell_id_in_report = set(tuple(x) for x in report_df[[cell_id_str_report, lac_str_report]].values)
 
 with open('../data_routes_pickle/station_map', 'rb') as f:
