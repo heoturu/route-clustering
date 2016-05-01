@@ -120,7 +120,6 @@ if dist_measure == 'standard':
     data['route_cell_id'] = \
         data.apply(lambda row: create_aligned_path(row, from_time, to_time, dist_measure), axis=1)
 
-
     def get_coords(path):
         path_ret = []
         for cell_id_lac in path:
@@ -129,7 +128,6 @@ if dist_measure == 'standard':
             path_ret += [(lon, lat)]
 
         return path_ret
-
 
     data['route_coord'] = data['route_cell_id'].apply(get_coords).tolist()
 
