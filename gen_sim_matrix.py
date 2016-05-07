@@ -19,7 +19,7 @@ def remove_dups_conseq(route):
 
 threshold_dist_miles = 1.0
 
-with open('data_routes_pickle/routes_coord_f_any_3_closest_0.1_nocycles', 'rb') as f:
+with open('data_routes_pickle/routes_coord_any_3_contains_nocycles_angle_1.2', 'rb') as f:
     routes_coord = pickle.load(f)
 
 coord_list = routes_coord
@@ -56,7 +56,7 @@ def segment_dist_sum(segment1, segment2):
     d3 = dist_vinc(segment1[0], segment2[1])
     d4 = dist_vinc(segment1[1], segment2[0])
 
-    return min(d1 + d2, d3 + d4)
+    return min(max(d1, d2), max(d3, d4))
 
 
 def compute_distance(route1, route2, metric):
@@ -81,18 +81,33 @@ def compute_distance(route1, route2, metric):
         return (min(len(route1), len(route2))) - total_common_count
     elif metric == 'sim_segments':
         # Remove (only consecutive!) duplicates
-        route1_unique = remove_dups_conseq(route1)
-        route2_unique = remove_dups_conseq(route2)
+        route1_unique = route1
+        route2_unique = route2
 
         total_sim_segment_count = 0
         for i in range(len(route1_unique) - 1):
             for j in range(len(route2_unique) - 1):
-                if similar_segments((route1_unique[i], route1_unique[i + 1]),
-                                    (route2_unique[j], route2_unique[j + 1])):
-                    total_sim_segment_count += \
-                        (dist_to_stadium(route1_unique[i]) + dist_to_stadium(route1_unique[i + 1]) / 2 +
-                         dist_to_stadium(route2_unique[j]) + dist_to_stadium(route2_unique[j + 1]) / 2)
-                    # TODO Angle
+                # if similar_segments((route1_unique[i], route1_unique[i + 1]),
+                #                     (route2_unique[j], route2_unique[j + 1])):
+                #     total_sim_segment_count += \
+                #         (dist_to_stadium(route1_unique[i]) + dist_to_stadium(route1_unique[i + 1]) / 2 +
+                #          dist_to_stadium(route2_unique[j]) + dist_to_stadium(route2_unique[j + 1]) / 2)
+
+                segment_dist_sum_cur = segment_dist_sum((route1_unique[i], route1_unique[i + 1]),
+                                                        (route2_unique[j], route2_unique[j + 1]))
+
+                dist_factor = \
+                    ((dist_to_stadium(route1_unique[i]) + dist_to_stadium(route1_unique[i + 1])) / 2 +
+                     (dist_to_stadium(route2_unique[j]) + dist_to_stadium(route2_unique[j + 1])) / 2) #\
+                    # ** (1 / 3)
+
+                if segment_dist_sum_cur < threshold_dist_miles:
+                    total_sim_segment_count += 10 / dist_factor
+                elif segment_dist_sum_cur < threshold_dist_miles * 2:
+                    total_sim_segment_count += 4 / dist_factor
+                elif segment_dist_sum_cur < threshold_dist_miles * 3:
+                    total_sim_segment_count += 2 / dist_factor
+
         return total_sim_segment_count
     else:
         raise Exception('Unknown metric')
@@ -112,5 +127,5 @@ for i in range(number_of_paths):
 #         print('Elem done')
     print('Row done #' + str(i))
 
-with open('data_routes_pickle/sim_matrix_sim_segments_1', 'wb') as f:
+with open('data_routes_pickle/sim_matrix_sim_segments_1_mod23_halfdiv_div', 'wb') as f:
     pickle.dump(distance_matrix, f)

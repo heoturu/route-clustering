@@ -1,3 +1,6 @@
+from itertools import groupby
+from operator import itemgetter
+
 def remove_dups(routes_coord):
     """
     Removing only long-spanning dups (length >= 3)
@@ -5,7 +8,7 @@ def remove_dups(routes_coord):
 
     routes_coord_no2cycles_intl = []
 
-    removed_route_count = 0  # TODO Use
+    removed_route_count = 0 # TODO Use
     for i in range(len(routes_coord)):
         # print(*routes_coord[i], sep='\n')
         # print()
@@ -27,7 +30,7 @@ def remove_dups(routes_coord):
                 j += 1
             elif (route_unique[j] == route_unique[j + 2] and
                   route_unique[j + 1] == route_unique[j + 3] and
-                  not route_unique[j] == route_unique[j + 4]):
+                  route_unique[j] != route_unique[j + 4]):
                 final_route.append(route_unique[j])
                 j += 3
             elif (route_unique[j] == route_unique[j + 2] == route_unique[j + 4] and
