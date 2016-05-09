@@ -17,9 +17,9 @@ lon_str_report = 'LON'
 
 nrows = 10000
 interval_min = 10
-measure_approx_boundary = interval_min  # TODO Seems better to use smth like interval_min / 3
+measure_approx_boundary = interval_min # TODO Seems better to use smth like interval_min / 3
 
-dist_measure = 'standard'
+dist_measure = 'approx'
 
 df = pd.read_csv('./data_routes_csv/petrovsky_11.csv')
 
@@ -38,7 +38,7 @@ def get_time(time_str):
 from_time = get_time('24.11.2015 16.00.00')
 to_time = get_time('24.11.2015 23.59.59')
 
-
+route_idx = 0
 def create_aligned_path(data_src, start_time, end_time, measure):
     def measure_standard():
         return data_src_cells[mindiff_idx], data_src_lacs[mindiff_idx]
@@ -100,6 +100,10 @@ def create_aligned_path(data_src, start_time, end_time, measure):
         acc.append(used_measure())
         cur_time += step
 
+    global route_idx
+    print('Done route ' + str(route_idx))
+    route_idx += 1
+
     return acc
 
 
@@ -134,16 +138,16 @@ if dist_measure == 'standard':
     with open('./data_routes_pickle/routes_cell_id', 'wb') as f:
         pickle.dump(list(data['route_cell_id']), f)
 elif dist_measure == 'approx':
-    data['route_coord'] = \
+    data['route_coord_approx'] = \
         data.apply(lambda row: create_aligned_path(row, from_time, to_time, dist_measure), axis=1)
 else:
     raise Exception('Unknown station location measure defined')
 
-with open('./data_routes_pickle/routes_user_id', 'wb') as f:
-    pickle.dump(list(data[user_id_str]), f)
+# with open('./data_routes_pickle/routes_user_id', 'wb') as f:
+#     pickle.dump(list(data[user_id_str]), f)
 
-with open('./data_routes_pickle/routes_coord', 'wb') as f:
-    pickle.dump(list(data['route_coord']), f)
+with open('./data_routes_pickle/routes_coord_approx', 'wb') as f:
+    pickle.dump(list(data['route_coord_approx']), f)
 
 # Creating report_dict
 

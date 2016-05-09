@@ -1,11 +1,14 @@
 import numpy as np
 import pickle
+import math
 
 from itertools import product
 from itertools import groupby
 from operator import itemgetter
 
 from geopy.distance import vincenty
+
+import utils
 
 
 stadium_coords = 30.28725, 59.95271
@@ -97,18 +100,21 @@ def compute_distance(route1, route2, metric):
                                                         (route2_unique[j], route2_unique[j + 1]))
 
                 dist_factor = \
-                    ((dist_to_stadium(route1_unique[i]) + dist_to_stadium(route1_unique[i + 1])) / 2 +
-                     (dist_to_stadium(route2_unique[j]) + dist_to_stadium(route2_unique[j + 1])) / 2) #\
+                    (dist_to_stadium(route1_unique[i]) + dist_to_stadium(route1_unique[i + 1])) / 2 + \
+                    (dist_to_stadium(route2_unique[j]) + dist_to_stadium(route2_unique[j + 1])) / 2 \
                     # ** (1 / 3)
 
                 if segment_dist_sum_cur < threshold_dist_miles:
-                    total_sim_segment_count += 10 / dist_factor
+                    total_sim_segment_count += 1.0 * dist_factor
                 elif segment_dist_sum_cur < threshold_dist_miles * 2:
-                    total_sim_segment_count += 4 / dist_factor
+                    total_sim_segment_count += 0.4 * dist_factor
                 elif segment_dist_sum_cur < threshold_dist_miles * 3:
-                    total_sim_segment_count += 2 / dist_factor
+                    total_sim_segment_count += 0.2 * dist_factor
 
-        return total_sim_segment_count
+        cumul_point1 = utils.cumul_point(route1_unique)
+        cumul_point2 = utils.cumul_point(route2_unique)
+        angle = utils.angle_diff_points(route1_unique[0], cumul_point1, cumul_point2)
+        return total_sim_segment_count * (1 - angle / math.pi)
     else:
         raise Exception('Unknown metric')
 
@@ -127,5 +133,5 @@ for i in range(number_of_paths):
 #         print('Elem done')
     print('Row done #' + str(i))
 
-with open('data_routes_pickle/sim_matrix_sim_segments_1_mod23_halfdiv_div', 'wb') as f:
+with open('data_routes_pickle/sim_matrix_sim_segments_1_mod23_cumul', 'wb') as f:
     pickle.dump(distance_matrix, f)
