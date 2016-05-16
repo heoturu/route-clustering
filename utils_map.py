@@ -29,8 +29,10 @@ m = Basemap(
     resolution='i',
     suppress_ticks=True)
 
+
 def vector_diff(point1, point2):
     return [point1.x - point2.x, point1.y - point2.y]
+
 
 def angle_diff_points(point0, point1, point2):
     map_point0, map_point1, map_point2 = \
@@ -46,6 +48,7 @@ def angle_diff_points(point0, point1, point2):
         return 0
     return math.acos(prod)
 
+
 def angle_diff_max(route):
     angle_diff_max = 0
     for i in range(1, len(route) - 1):
@@ -55,6 +58,7 @@ def angle_diff_max(route):
                 angle_diff_max = angle_diff_cur
 
     return angle_diff_max
+
 
 def cumul_point(route):
     cumul_point = [0, 0]
